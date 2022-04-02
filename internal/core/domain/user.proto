@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package user_svc;
+option go_package = "internal/core/domain";
+
+import "google/protobuf/empty.proto";
+
+service UserService {
+  rpc Find(FindReq) returns (FindRes) {}
+  rpc Store(StoreReq) returns (StoreRes) {}
+  rpc Update(UpdateReq) returns (UpdateRes) {}
+  rpc FindAll(FindAllReq) returns (FindAllRes) {}
+  rpc Delete(DeleteReq) returns (DeleteRes) {}
+}
+
+message User {
+  string id = 1; // @gotags: bson:"id,omitempty" validate:"required"
+  string name = 2; // @gotags: bson:"name,omitempty" validate:"required"
+  string username = 3; // @gotags: bson:"username,omitempty" validate:"required"
+  string email = 4; // @gotags: bson:"email,omitempty" validate:"required,email"
+  string password = 5; // @gotags: bson:"password,omitempty" validate:"required"
+  Role role = 6; // @gotags: bson:"role,omitempty" validate:"required"
+  string phone_number = 7; // @gotags: bson:"phone_number,omitempty"
+  string profile_picture_url = 8; // @gotags: bson:"profile_picture_url,omitempty"
+  bool is_email_verified = 9; // @gotags: bson:"is_email_verified,omitempty" validate:"required,boolean"
+  bool is_active = 10; // @gotags: bson:"is_active,omitempty" validate:"required,boolean"
+  int64 active_until = 11; // @gotags: bson:"active_until,omitempty" validate:"required,numeric"
+  int64 created_at = 12; // @gotags: bson:"created_at,omitempty" validate:"required,numeric"
+  int64 updated_at = 13; // @gotags: bson:"updated_at,omitempty" validate:"required,numeric"
+  int64 deleted_at = 14; // @gotags: bson:"deleted_at,omitempty" validate:"numeric"
+}
+
+enum Role {
+  ADMIN = 0;
+  USER = 1;
+}
+
+enum OrderBy {
+  CREATED_AT = 0;
+  UPDATED_AT = 1;
+}
+
+enum OrderType {
+  ASC = 0;
+  DESC = 1;
+}
+
+message FindReq {
+  string id = 1;
+}
+
+message FindRes {
+  User data = 1;
+}
+
+message StoreReq {
+  User data = 1;
+}
+
+message StoreRes {}
+
+message UpdateReq {
+  string id = 1;
+  User data = 2;
+}
+
+message UpdateRes {}
+
+message FindAllReq {
+  int64 page = 1;
+  int64 limit = 2;
+  OrderBy orderBy = 3;
+  OrderType orderType = 4;
+}
+
+message FindAllRes {
+  int64 totalDatas = 1;
+  int64 limit = 2;
+  int64 page = 3;
+  int64 totalPages = 4;
+  repeated User datas = 5;
+  int64 nextPage = 6;
+  int64 prevPage = 7;
+}
+
+message DeleteReq {
+  string id = 1;
+}
+
+message DeleteRes {}
